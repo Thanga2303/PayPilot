@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PayPilot - Smart Expense Tracker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --background: #f5f7fb;
+            --card: white;
+            --text: #172033;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+        }
+
+        body.dark {
+            --background: #0f172a;
+            --card: #172033;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            transition: 0.3s;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+
+            color: white;
+            padding: 28px 5%;
+
+            box-shadow:
+                0 5px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            opacity: 0.85;
+        }
+
+        .theme-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+
+            color: white;
+
+            padding: 10px 15px;
+            border-radius: 10px;
+
+            cursor: pointer;
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+
+            margin: 30px auto;
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            border-radius: 18px;
+
+            padding: 24px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 8px 25px rgba(15,23,42,0.06);
+        }
+
+        .stat-label {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .stat-value {
+            margin-top: 8px;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            color: var(--primary);
+        }
+
+        /* SECTION */
+
+        .section-title {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+
+            font-size: 21px;
+        }
+
+        /* FORM */
+
+        .form {
+            display: grid;
+
+            grid-template-columns:
+                1.2fr
+                0.8fr
+                1fr
+                auto;
+
+            gap: 12px;
+        }
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 11px;
+
+            background: var(--card);
+
+            color: var(--text);
+
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.12);
+        }
+
+        /* BUTTON */
+
+        .primary-btn {
+
+            border: none;
+
+            background: var(--primary);
+
+            color: white;
+
+            padding: 13px 20px;
+
+            border-radius: 11px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .primary-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* SEARCH */
+
+        .search {
+            margin-bottom: 15px;
+        }
+
+        /* EXPENSE LIST */
+
+        .expense-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .expense {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                auto
+                auto;
+
+            align-items: center;
+
+            gap: 18px;
+
+            padding: 17px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 13px;
+
+            background: rgba(148,163,184,0.06);
+        }
+
+        .expense-title {
+
+            font-weight: bold;
+
+            font-size: 16px;
+        }
+
+        .category {
+
+            display: inline-block;
+
+            margin-top: 6px;
+
+            padding: 4px 8px;
+
+            border-radius: 20px;
+
+            background: rgba(37,99,235,0.1);
+
+            color: var(--primary);
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .amount {
+
+            color: var(--green);
+
+            font-weight: 800;
+        }
+
+        /* ACTION BUTTONS */
+
+        .actions {
+
+            display: flex;
+
+            gap: 8px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+
+            border: none;
+
+            color: white;
+
+            padding: 9px 13px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background: var(--orange);
+        }
+
+        .delete-btn {
+            background: var(--red);
+        }
+
+        /* CHART */
+
+        .chart {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 14px;
+        }
+
+        .bar-row {
+
+            display: grid;
+
+            grid-template-columns:
+                90px
+                1fr
+                70px;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .bar-track {
+
+            height: 12px;
+
+            background: #e5e7eb;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .bar {
+
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #6366f1
+                );
+
+            border-radius: 20px;
+        }
+
+        .empty {
+
+            text-align: center;
+
+            color: var(--muted);
+
+            padding: 30px;
+        }
+
+        /* MODAL */
+
+        .modal {
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.55);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+
+            width: 100%;
+
+            max-width: 480px;
+
+            background: var(--card);
+
+            color: var(--text);
+
+            border-radius: 18px;
+
+            padding: 25px;
+        }
+
+        .modal-box h2 {
+            margin-top: 0;
+        }
+
+        .modal-form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+        .modal-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+        }
+
+        .cancel-btn {
+
+            border: 1px solid var(--border);
+
+            background: transparent;
+
+            color: var(--text);
+
+            padding: 11px 16px;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+        }
+
+        /* TOAST */
+
+        .toast {
+
+            position: fixed;
+
+            right: 20px;
+
+            bottom: 20px;
+
+            background: #111827;
+
+            color: white;
+
+            padding: 13px 17px;
+
+            border-radius: 10px;
+
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:850px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .header-content {
+                align-items: flex-start;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .form {
+                grid-template-columns: 1fr;
+            }
+
+            .expense {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                justify-content: flex-start;
+            }
+
+            .bar-row {
+                grid-template-columns:
+                    70px
+                    1fr
+                    55px;
+            }
+        }
+
+    /* your existing CSS here */
+
+
+    /* DARK THEME */
+    body.dark-theme {
+        --background: #121212;
+        --card: #1e1e1e;
+        --text: #ffffff;
+        --text-light: #b0b0b0;
+        --border: #333333;
+    }
+
+    body.dark-theme {
+        background: var(--background);
+        color: var(--text);
+    }
+.primary-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.primary-btn:hover {
+    background: #1d4ed8;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- HEADER -->
+
+<header class="header">
+
+    <div class="header-content">
+
+        <div class="brand">
+
+            <h1>💰 PayPilot</h1>
+
+            <p>Smart Expense Tracker</p>
+
+        </div>
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()">
+
+            🌙 Theme
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats">
+
+        <div class="card">
+
+            <div class="stat-label">
+                Total Spending
+            </div>
+
+            <div
+                class="stat-value"
+                id="total">
+
+                ₹0
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="stat-label">
+                Total Expenses
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalExpenses">
+
+                ₹0
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="stat-label">
+                Average Expense
+            </div>
+
+            <div
+                class="stat-value"
+                id="averageExpense">
+
+                ₹0
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Highest Expense -->
+<div class="card">
+    <div class="stat-label">Highest Expense</div>
+    <div class="stat-value" id="highestExpense">₹0</div>
+</div>
+
+
+    <!-- ADD EXPENSE -->
+
+    <section class="card">
+
+        <div class="section-title">
+
+            <h2>
+                ➕ Add New Expense
+            </h2>
+
+        </div>
+
+
+        <div class="form">
+
+            <input
+                id="expenseTitle"
+                placeholder="Expense title">
+
+
+            <input
+                id="expenseAmount"
+                type="number"
+                placeholder="Amount (₹)">
+
+
+            <select id="expenseCategory">
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Bills">Bills</option>
+              <option value="Other">Other</option>
+            </select>
+
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="addExpense()">
+
+                Add Expense
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- CHART -->
+
+    <section class="card">
+
+        <div class="section-title">
+
+            <h2>
+                📊 Spending by Category
+            </h2>
+
+        </div>
+
+        <div
+            id="chart"
+            class="chart">
+
+            <div class="empty">
+
+                Add expenses to see your chart.
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EXPENSES -->
+
+    <section class="card">
+
+        <div class="section-title">
+
+            <h2>
+                📋 Recent Expenses
+            </h2>
+
+        </div>
+
+
+        <input
+            class="search"
+            id="search"
+            placeholder="🔎 Search expenses..."
+            oninput="renderExpenses()">
+
+
+        <div
+            id="expenseList"
+            class="expense-list">
+
+            <div class="empty">
+                Loading expenses...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- EDIT MODAL -->
+
+<div
+    id="editModal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <h2>
+            ✏️ Edit Expense
+        </h2>
+
+
+        <div class="modal-form">
+
+            <input
+                id="editTitle"
+                placeholder="Expense title">
+
+
+            <input
+                id="editAmount"
+                type="number"
+                placeholder="Amount (₹)">
+
+
+            <select id="editCategory">
+
+                <option value="">
+                    Select category
+                </option>
+
+                <option>Food</option>
+
+                <option>Transport</option>
+
+                <option>Shopping</option>
+
+                <option>Entertainment</option>
+
+                <option>Education</option>
+
+                <option>Health</option>
+
+                <option>Bills</option>
+
+                <option>Other</option>
+
+            </select>
+
+
+            <div class="modal-actions">
+
+                <button
+                    class="cancel-btn"
+                    onclick="closeModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="saveEdit()">
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="toast"
+    class="toast">
+
+</div>
+
+
+<script>
+
+
+const API =
+    "http://127.0.0.1:8000";
+
+let expenses = [];
+
+let editingId = null;
+
+
+/* MONEY */
+
+function money(value) {
+
+    return "₹" +
+        Number(value || 0)
+        .toLocaleString("en-IN");
+
+}
+
+
+/* TOAST */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2000);
+
+
+
+
+}
+
+
+/* LOAD EXPENSES */
+
+async function loadExpenses() {
+    try {
+        const response = await fetch(`${API}/expenses`);
+
+        if (!response.ok) {
+            throw new Error("Failed to load expenses");
+        }
+
+        const data = await response.json();
+
+        expenses = data;
+
+        updateStats();
+        renderExpenses(expenses);
+        renderCategoryChart();
+
+    } catch (error) {
+        console.error("Load expenses error:", error);
+
+        document.getElementById("expenseList").innerHTML = `
+            <div class="empty">
+                Could not connect to backend.<br>
+                Make sure Uvicorn is running.
+            </div>
+        `;
+    }
+}
+//call this when page is loaded
+loadExpenses();
+
+async function addExpense() {
+    const title = document.getElementById("expenseTitle").value;
+    const amount = document.getElementById("expenseAmount").value;
+    const category = document.getElementById("expenseCategory").value;
+
+
+    console.log("TITLE:", title);
+    console.log("AMOUNT:", amount);
+    console.log("CATEGORY:", category);
+
+    if (!title || !amount || !category) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    const url =
+        `/expenses?title=${encodeURIComponent(title)}&amount=${amount}&category=${encodeURIComponent(category)}`;
+
+    console.log("POST URL:", url);
+
+    const response = await fetch(url, {
+        method: "POST"
+    });
+
+    console.log("POST STATUS:", response.status);
+
+    if (response.ok) {
+        alert("Expense added successfully!");
+
+        document.getElementById("expenseTitle").value = "";
+        document.getElementById("expenseAmount").value = "";
+        document.getElementById("expenseCategory").value = "";
+
+        await loadExpenses();
+
+    } else {
+        alert("Failed to add expense");
+    }
+}
+/* STATISTICS */
+
+async function updateStats() {
+
+    try {
+
+        const response = await fetch(`${API}/expenses`);
+
+        if (!response.ok) {
+            throw new Error("Failed to load expenses");
+        }
+
+        const data = await response.json();
+
+        const total = data.reduce(
+            (sum, expense) =>
+                sum + Number(expense.amount || 0),
+            0
+        );
+
+        const highest = data.length > 0
+            ? Math.max(
+                ...data.map(
+                    expense => Number(expense.amount || 0)
+                )
+            )
+            : 0;
+
+        const average = data.length > 0
+            ? total / data.length
+            : 0;
+
+        document.getElementById("total").textContent =
+            `₹${total.toFixed(2)}`;
+
+        document.getElementById("totalExpenses").textContent =
+            `₹${total.toFixed(2)}`;
+
+        document.getElementById("averageExpense").textContent =
+            `₹${average.toFixed(2)}`;
+
+        document.getElementById("highestExpense").textContent =
+            `₹${highest.toFixed(2)}`;
+
+    } catch (error) {
+
+        console.error("Stats error:", error);
+
+    }
+}
+
+async function renderExpenses() {
+    try {
+        const response = await fetch(`${API}/expenses`);
+
+        if (!response.ok) {
+            throw new Error("Failed to load expenses");
+        }
+
+        expenses = await response.json();
+
+        const list = document.getElementById("expenseList");
+        const searchText = document.getElementById("search").value.toLowerCase();
+
+        const filteredExpenses = expenses.filter(expense =>
+            expense.title.toLowerCase().includes(searchText) ||
+            expense.category.toLowerCase().includes(searchText)
+        );
+
+        list.innerHTML = "";
+
+        if (filteredExpenses.length === 0) {
+            list.innerHTML = `
+                <div class="empty">
+                    No expenses found.
+                </div>
+            `;
+            return;
+        }
+
+        filteredExpenses.forEach(expense => {
+
+            const item = document.createElement("div");
+
+            item.className = "expense";
+
+            item.innerHTML = `
+                <div>
+                    <div class="expense-title">
+                        ${expense.title}
+                    </div>
+
+                    <span class="category">
+                        ${expense.category}
+                    </span>
+                </div>
+
+                <div class="amount">
+                    ₹${Number(expense.amount).toFixed(2)}
+                </div>
+
+                <div class="actions">
+
+                    <button
+                        class="edit-btn"
+                        onclick="editExpense(${expense.id})">
+                        Edit
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteExpense(${expense.id})">
+                        Delete
+                    </button>
+
+                </div>
+            `;
+
+            list.appendChild(item);
+        });
+
+    } catch (error) {
+        console.error("Render expenses error:", error);
+
+        document.getElementById("expenseList").innerHTML = `
+            <div class="empty">
+                Could not load expenses.
+            </div>
+        `;
+    }
+}
+
+async function editExpense(id) {
+    const expense = expenses.find(e => e.id === id);
+
+    if (!expense) {
+        alert("Expense not found");
+        return;
+    }
+
+    const title = prompt("Enter expense title:", expense.title);
+    if (title === null) return;
+
+    const amount = prompt("Enter amount:", expense.amount);
+    if (amount === null) return;
+
+    const category = prompt("Enter category:", expense.category);
+    if (category === null) return;
+
+    const response = await fetch(`/expenses/${id}?title=${encodeURIComponent(title)}&amount=${encodeURIComponent(amount)}&category=${encodeURIComponent(category)}`, {
+        method: "PUT"
+    });
+
+    if (response.ok) {
+        alert("Expense updated successfully!");
+
+        await renderExpenses();
+    } else {
+        alert("Failed to update expense");
+    }
+}
+
+/* DISPLAY EXPENSES */
+
+
+
+
+/* DELETE */
+
+async function deleteExpense(id) {
+
+    if (!confirm(
+        "Delete this expense?"
+    )) return;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API}/expenses/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to delete"
+            );
+
+        }
+
+
+        await loadExpenses();
+
+
+        showToast(
+            "Expense deleted 🗑️"
+        );
+
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            "Could not delete expense."
+        );
+
+    }
+
+}
+
+
+/* OPEN EDIT */
+
+function openEdit(id) {
+
+    const item =
+        expenses.find(
+            expense =>
+                expense.id === id
+        );
+
+
+    if (!item) return;
+
+
+    editingId = id;
+
+
+    document.getElementById(
+        "editTitle"
+    ).value = item.title;
+
+
+    document.getElementById(
+        "editAmount"
+    ).value = item.amount;
+
+
+    document.getElementById(
+        "editCategory"
+    ).value = item.category;
+
+
+    document.getElementById(
+        "editModal"
+    ).classList.add("show");
+
+}
+
+
+/* CLOSE EDIT */
+
+function closeModal() {
+
+    editingId = null;
+
+    document.getElementById(
+        "editModal"
+    ).classList.remove("show");
+
+}
+
+/* SAVE EDIT */
+
+function renderCategoryChart() {
+    const chart = document.getElementById("chart");
+
+    if (!chart) return;
+
+    const categoryTotals = {};
+
+    expenses.forEach(expense => {
+        const category = expense.category || "Other";
+        const amount = Number(expense.amount) || 0;
+
+        categoryTotals[category] =
+            (categoryTotals[category] || 0) + amount;
+    });
+
+    chart.innerHTML = "";
+
+    if (Object.keys(categoryTotals).length === 0) {
+        chart.innerHTML = `
+            <div class="empty">
+                <p>No spending data yet</p>
+            </div>
+        `;
+        return;
+    }
+
+    const maxAmount = Math.max(...Object.values(categoryTotals));
+
+    Object.entries(categoryTotals).forEach(([category, amount]) => {
+        const percentage = (amount / maxAmount) * 100;
+
+        chart.innerHTML += `
+            <div class="category-item">
+                <div class="category-header">
+                    <span>${category}</span>
+                    <strong>₹${amount.toLocaleString("en-IN")}</strong>
+                </div>
+
+                <div class="category-bar">
+                    <div class="category-fill"
+                         style="width:${percentage}%">
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("dark-theme");
+}
+
+
+function toggleTheme() {
+    document.body.classList.toggle("dark-theme");
+}
+
+</script>
+
+
+</body>
+</html>
